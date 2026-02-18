@@ -1,0 +1,195 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Usuários do sistema ───────────────────────────────────────────────────────
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      UserRole @default(OPERATOR)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  campaigns Campaign[]
+  templates Template[]
+
+  @@map("users")
+}
+
+enum UserRole {
+  ADMIN
+  OPERATOR
+}
+
+// ─── Contatos ─────────────────────────────────────────────────────────────────
+model Contact {
+  id          String        @id @default(cuid())
+  phone       String        @unique  // formato E.164: +5511999999999
+  name        String?
+  email       String?
+  tags        String[]      @default([])
+  metadata    Json?         // dados extras (cargo, empresa, etc.)
+  optedOut    Boolean       @default(false) // solicitou não receber mais msgs
+  optedOutAt  DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  listMembers ContactListMember[]
+  messages    MessageLog[]
+
+  @@map("contacts")
+}
+
+// ─── Listas de contatos ───────────────────────────────────────────────────────
+model ContactList {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  members   ContactListMember[]
+  campaigns Campaign[]
+
+  @@map("contact_lists")
+}
+
+model ContactListMember {
+  contactId String
+  listId    String
+  addedAt   DateTime @default(now())
+
+  contact Contact     @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  list    ContactList @relation(fields: [listId], references: [id], onDelete: Cascade)
+
+  @@id([contactId, listId])
+  @@map("contact_list_members")
+}
+
+// ─── Templates de mensagem (aprovados pela Meta) ──────────────────────────────
+model Template {
+  id           String         @id @default(cuid())
+  name         String         // nome do template na Meta (snake_case)
+  category     TemplateCategory
+  language     String         @default("pt_BR")
+  status       TemplateStatus @default(PENDING)
+  headerType   HeaderType?
+  headerContent String?       // texto do header ou URL da mídia
+  body         String         // texto do corpo com variáveis {{1}}, {{2}}
+  footer       String?
+  buttons      Json?          // array de botões (CTAs)
+  metaTemplateId String?      // ID retornado pela Meta após aprovação
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  createdBy    User       @relation(fields: [createdById], references: [id])
+  createdById  String
+  campaigns    Campaign[]
+
+  @@map("templates")
+}
+
+enum TemplateCategory {
+  MARKETING
+  UTILITY
+  AUTHENTICATION
+}
+
+enum TemplateStatus {
+  PENDING      // aguardando envio para aprovação
+  SUBMITTED    // enviado para a Meta
+  APPROVED     // aprovado pela Meta
+  REJECTED     // rejeitado pela Meta
+  PAUSED       // pausado pela Meta
+}
+
+enum HeaderType {
+  TEXT
+  IMAGE
+  VIDEO
+  DOCUMENT
+}
+
+// ─── Campanhas de disparo ─────────────────────────────────────────────────────
+model Campaign {
+  id            String         @id @default(cuid())
+  name          String
+  description   String?
+  status        CampaignStatus @default(DRAFT)
+  scheduledAt   DateTime?      // null = enviar imediatamente
+  startedAt     DateTime?
+  completedAt   DateTime?
+  templateVars  Json?          // valores padrão para variáveis do template
+  totalContacts Int            @default(0)
+  sentCount     Int            @default(0)
+  deliveredCount Int           @default(0)
+  readCount     Int            @default(0)
+  failedCount   Int            @default(0)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  createdBy    User        @relation(fields: [createdById], references: [id])
+  createdById  String
+  template     Template    @relation(fields: [templateId], references: [id])
+  templateId   String
+  contactList  ContactList @relation(fields: [contactListId], references: [id])
+  contactListId String
+  messages     MessageLog[]
+
+  @@map("campaigns")
+}
+
+enum CampaignStatus {
+  DRAFT       // rascunho, não enviado
+  SCHEDULED   // agendada para envio futuro
+  RUNNING     // em execução (disparando)
+  PAUSED      // pausada manualmente
+  COMPLETED   // finalizada com sucesso
+  FAILED      // falha crítica
+  CANCELLED   // cancelada
+}
+
+// ─── Log de mensagens individuais ────────────────────────────────────────────
+model MessageLog {
+  id            String        @id @default(cuid())
+  campaignId    String
+  contactId     String
+  phone         String
+  status        MessageStatus @default(QUEUED)
+  metaMessageId String?       // ID da mensagem retornado pela Meta
+  errorCode     String?
+  errorMessage  String?
+  sentAt        DateTime?
+  deliveredAt   DateTime?
+  readAt        DateTime?
+  failedAt      DateTime?
+  templateVars  Json?         // variáveis específicas deste contato
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  campaign Campaign @relation(fields: [campaignId], references: [id])
+  contact  Contact  @relation(fields: [contactId], references: [id])
+
+  @@index([campaignId])
+  @@index([contactId])
+  @@index([metaMessageId])
+  @@map("message_logs")
+}
+
+enum MessageStatus {
+  QUEUED      // na fila BullMQ
+  SENDING     // sendo enviado para a Meta
+  SENT        // aceito pela Meta
+  DELIVERED   // entregue ao dispositivo
+  READ        // lido pelo destinatário
+  FAILED      // falhou (ver errorCode)
+  OPTED_OUT   // contato na lista de opt-out
+}
