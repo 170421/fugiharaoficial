@@ -24,16 +24,16 @@ const navItems = [
 
 export function Sidebar({ onLogout, userName }: SidebarProps) {
   return (
-    <aside className="w-64 bg-whatsapp-700 text-white flex flex-col h-screen fixed left-0 top-0">
+    <aside className="w-64 bg-brand-900 text-white flex flex-col h-screen fixed left-0 top-0">
       {/* Logo */}
-      <div className="p-6 border-b border-whatsapp-600">
+      <div className="p-6 border-b border-brand-700">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-whatsapp-500 rounded-lg flex items-center justify-center">
+          <div className="w-9 h-9 bg-brand-500 rounded-lg flex items-center justify-center">
             <MessageSquare size={20} />
           </div>
           <div>
             <p className="font-bold text-sm">Farma-X</p>
-            <p className="text-xs text-whatsapp-100 opacity-80">WhatsApp Marketing</p>
+            <p className="text-xs text-brand-200 opacity-80">WhatsApp Marketing</p>
           </div>
         </div>
       </div>
@@ -49,7 +49,7 @@ export function Sidebar({ onLogout, userName }: SidebarProps) {
               `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                 isActive
                   ? 'bg-white/20 text-white'
-                  : 'text-whatsapp-100 hover:bg-white/10 hover:text-white'
+                  : 'text-brand-200 hover:bg-white/10 hover:text-white'
               }`
             }
           >
@@ -60,11 +60,11 @@ export function Sidebar({ onLogout, userName }: SidebarProps) {
       </nav>
 
       {/* User & Logout */}
-      <div className="p-4 border-t border-whatsapp-600">
+      <div className="p-4 border-t border-brand-700">
         <div className="flex items-center justify-between">
           <div className="min-w-0">
             <p className="text-sm font-medium truncate">{userName}</p>
-            <p className="text-xs text-whatsapp-100 opacity-70">Operador</p>
+            <p className="text-xs text-brand-200 opacity-70">Operador</p>
           </div>
           <button
             onClick={onLogout}

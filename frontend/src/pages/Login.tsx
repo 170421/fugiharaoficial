@@ -25,10 +25,10 @@ export function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-whatsapp-700 to-whatsapp-600 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-brand-900 to-brand-700 flex items-center justify-center p-4">
       <div className="card w-full max-w-sm p-8">
         <div className="text-center mb-8">
-          <div className="inline-flex w-14 h-14 bg-whatsapp-500 rounded-2xl items-center justify-center mb-4">
+          <div className="inline-flex w-14 h-14 bg-brand-500 rounded-2xl items-center justify-center mb-4">
             <MessageSquare size={28} className="text-white" />
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Farma-X</h1>

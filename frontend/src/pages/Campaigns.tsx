@@ -5,21 +5,8 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import toast from 'react-hot-toast';
 import { campaignsApi, templatesApi, contactsApi, Campaign } from '../services/api';
-
-const STATUS_COLORS: Record<string, string> = {
-  DRAFT: 'bg-gray-100 text-gray-700',
-  SCHEDULED: 'bg-blue-100 text-blue-700',
-  RUNNING: 'bg-green-100 text-green-700',
-  PAUSED: 'bg-yellow-100 text-yellow-700',
-  COMPLETED: 'bg-emerald-100 text-emerald-700',
-  FAILED: 'bg-red-100 text-red-700',
-  CANCELLED: 'bg-gray-100 text-gray-500',
-};
-
-const STATUS_LABELS: Record<string, string> = {
-  DRAFT: 'Rascunho', SCHEDULED: 'Agendada', RUNNING: 'Em execução',
-  PAUSED: 'Pausada', COMPLETED: 'Concluída', FAILED: 'Falha', CANCELLED: 'Cancelada',
-};
+import { StatusBadge } from '../components/ui/StatusBadge';
+import { CAMPAIGN_STATUS } from '../design-system/status';
 
 export function CampaignsPage() {
   const qc = useQueryClient();
@@ -87,7 +74,7 @@ export function CampaignsPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <h3 className="font-semibold text-gray-900">{c.name}</h3>
-                    <span className={`badge ${STATUS_COLORS[c.status]}`}>{STATUS_LABELS[c.status]}</span>
+                    <StatusBadge {...CAMPAIGN_STATUS[c.status]} />
                   </div>
                   <div className="flex items-center gap-4 text-xs text-gray-500">
                     <span className="flex items-center gap-1"><Users size={12} /> {c.contactList?.name}</span>
@@ -108,7 +95,7 @@ export function CampaignsPage() {
                         <span>{Math.round(sentPct)}%</span>
                       </div>
                       <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                        <div className="h-full bg-whatsapp-500 rounded-full" style={{ width: `${sentPct}%` }} />
+                        <div className="h-full bg-brand-500 rounded-full" style={{ width: `${sentPct}%` }} />
                       </div>
                       <div className="flex gap-4 text-xs text-gray-400">
                         <span>Entregues: {c.deliveredCount.toLocaleString('pt-BR')} ({Math.round(deliveredPct)}%)</span>
@@ -155,7 +142,7 @@ export function CampaignsPage() {
           {Array.from({ length: data.pages }, (_, i) => i + 1).map((p) => (
             <button key={p} onClick={() => setPage(p)}
               className={`w-8 h-8 rounded text-sm font-medium transition-colors ${
-                p === page ? 'bg-whatsapp-600 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
+                p === page ? 'bg-brand-700 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
               }`}>{p}</button>
           ))}
         </div>

@@ -37,7 +37,7 @@ export function ReportsPage() {
   if (isLoading || !data) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin w-8 h-8 border-4 border-whatsapp-500 border-t-transparent rounded-full" />
+        <div className="animate-spin w-8 h-8 border-4 border-brand-500 border-t-transparent rounded-full" />
       </div>
     );
   }
@@ -82,7 +82,7 @@ export function ReportsPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: 'Contatos Ativos', value: stats.totals.contacts, icon: Users, color: 'text-blue-600' },
-          { label: 'Total Enviadas', value: stats.totals.messages, icon: Send, color: 'text-whatsapp-600' },
+          { label: 'Total Enviadas', value: stats.totals.messages, icon: Send, color: 'text-channel-600' },
           { label: 'Entregues', value: stats.totals.delivered, icon: CheckCheck, color: 'text-emerald-600' },
           { label: 'Lidas', value: stats.totals.read, icon: Eye, color: 'text-cyan-600' },
         ].map(({ label, value, icon: Icon, color }) => (
@@ -97,11 +97,11 @@ export function ReportsPage() {
       {/* Funnel */}
       <div className="card p-6">
         <div className="flex items-center gap-2 mb-6">
-          <TrendingUp size={18} className="text-whatsapp-600" />
+          <TrendingUp size={18} className="text-brand-700" />
           <h3 className="font-semibold text-gray-900">Funil de Entrega</h3>
         </div>
         <div className="space-y-4">
-          <MetricRow label="Enviadas" value={stats.totals.messages} total={stats.totals.messages} color="bg-whatsapp-500" />
+          <MetricRow label="Enviadas" value={stats.totals.messages} total={stats.totals.messages} color="bg-brand-500" />
           <MetricRow label="Entregues" value={stats.totals.delivered} total={stats.totals.messages} color="bg-emerald-500" />
           <MetricRow label="Lidas" value={stats.totals.read} total={stats.totals.messages} color="bg-cyan-500" />
           <MetricRow label="Falhas" value={stats.totals.failed} total={stats.totals.messages} color="bg-red-500" />
@@ -114,7 +114,7 @@ export function ReportsPage() {
           <h3 className="font-semibold text-gray-700 mb-4">Taxa de Entrega</h3>
           <div className="flex items-center justify-center h-32">
             <div className="text-center">
-              <p className="text-5xl font-bold text-whatsapp-600">{stats.rates.delivery}%</p>
+              <p className="text-5xl font-bold text-brand-700">{stats.rates.delivery}%</p>
               <p className="text-sm text-gray-400 mt-2">mensagens chegaram ao destinatário</p>
             </div>
           </div>
