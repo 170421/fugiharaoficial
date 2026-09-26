@@ -6,7 +6,6 @@ import {
   FileText,
   BarChart3,
   LogOut,
-  MessageSquare,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -28,8 +27,8 @@ export function Sidebar({ onLogout, userName }: SidebarProps) {
       {/* Logo */}
       <div className="p-6 border-b border-brand-700">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-brand-500 rounded-lg flex items-center justify-center">
-            <MessageSquare size={20} />
+          <div className="w-9 h-9 bg-brand-500 rounded-lg flex items-center justify-center p-1.5">
+            <img src="/farma-x-symbol.svg" alt="" className="w-full h-full" />
           </div>
           <div>
             <p className="font-bold text-sm">Farma-X</p>
