@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MessageSquare, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../hooks/useAuth';
 
@@ -25,11 +25,11 @@ export function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-whatsapp-700 to-whatsapp-600 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-brand-900 to-brand-700 flex items-center justify-center p-4">
       <div className="card w-full max-w-sm p-8">
         <div className="text-center mb-8">
-          <div className="inline-flex w-14 h-14 bg-whatsapp-500 rounded-2xl items-center justify-center mb-4">
-            <MessageSquare size={28} className="text-white" />
+          <div className="inline-flex w-14 h-14 bg-brand-500 rounded-2xl items-center justify-center mb-4 p-3">
+            <img src="/farma-x-symbol.svg" alt="" className="w-full h-full" />
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Farma-X</h1>
           <p className="text-sm text-gray-500 mt-1">WhatsApp Marketing Platform</p>

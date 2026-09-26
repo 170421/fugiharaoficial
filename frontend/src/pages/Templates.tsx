@@ -1,16 +1,10 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Send, RefreshCw, Trash2, CheckCircle, Clock, XCircle } from 'lucide-react';
+import { Plus, Send, RefreshCw, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { templatesApi, Template } from '../services/api';
-
-const STATUS_CONFIG: Record<string, { label: string; icon: React.ElementType; color: string }> = {
-  PENDING:   { label: 'Pendente',   icon: Clock,        color: 'bg-gray-100 text-gray-700' },
-  SUBMITTED: { label: 'Em análise', icon: Clock,        color: 'bg-blue-100 text-blue-700' },
-  APPROVED:  { label: 'Aprovado',   icon: CheckCircle,  color: 'bg-green-100 text-green-700' },
-  REJECTED:  { label: 'Rejeitado',  icon: XCircle,      color: 'bg-red-100 text-red-700' },
-  PAUSED:    { label: 'Pausado',    icon: Clock,        color: 'bg-yellow-100 text-yellow-700' },
-};
+import { StatusBadge } from '../components/ui/StatusBadge';
+import { TEMPLATE_STATUS } from '../design-system/status';
 
 const CATEGORY_LABELS: Record<string, string> = {
   MARKETING: 'Marketing',
@@ -92,8 +86,7 @@ export function TemplatesPage() {
 
       <div className="grid gap-4">
         {(templates as Template[]).map((t) => {
-          const cfg = STATUS_CONFIG[t.status] || STATUS_CONFIG.PENDING;
-          const StatusIcon = cfg.icon;
+          const cfg = TEMPLATE_STATUS[t.status] || TEMPLATE_STATUS.PENDING;
 
           return (
             <div key={t.id} className="card p-5">
@@ -109,10 +102,7 @@ export function TemplatesPage() {
                 </div>
 
                 <div className="flex items-center gap-3 shrink-0">
-                  <span className={`badge flex items-center gap-1 ${cfg.color}`}>
-                    <StatusIcon size={12} />
-                    {cfg.label}
-                  </span>
+                  <StatusBadge {...cfg} />
 
                   {t.status === 'PENDING' && (
                     <button

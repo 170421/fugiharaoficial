@@ -1,6 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { Users, Megaphone, Send, CheckCheck, Eye, XCircle, TrendingUp, Activity } from 'lucide-react';
 import { reportsApi, DashboardStats, Campaign } from '../services/api';
+import { StatusBadge } from '../components/ui/StatusBadge';
+import { CAMPAIGN_STATUS } from '../design-system/status';
 
 function StatCard({ label, value, icon: Icon, color, sub }: {
   label: string;
@@ -25,26 +27,6 @@ function StatCard({ label, value, icon: Icon, color, sub }: {
   );
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  DRAFT: 'bg-gray-100 text-gray-700',
-  SCHEDULED: 'bg-blue-100 text-blue-700',
-  RUNNING: 'bg-green-100 text-green-700',
-  PAUSED: 'bg-yellow-100 text-yellow-700',
-  COMPLETED: 'bg-emerald-100 text-emerald-700',
-  FAILED: 'bg-red-100 text-red-700',
-  CANCELLED: 'bg-gray-100 text-gray-500',
-};
-
-const STATUS_LABELS: Record<string, string> = {
-  DRAFT: 'Rascunho',
-  SCHEDULED: 'Agendada',
-  RUNNING: 'Em execução',
-  PAUSED: 'Pausada',
-  COMPLETED: 'Concluída',
-  FAILED: 'Falha',
-  CANCELLED: 'Cancelada',
-};
-
 export function DashboardPage() {
   const { data, isLoading } = useQuery({
     queryKey: ['dashboard'],
@@ -55,7 +37,7 @@ export function DashboardPage() {
   if (isLoading || !data) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin w-8 h-8 border-4 border-whatsapp-500 border-t-transparent rounded-full" />
+        <div className="animate-spin w-8 h-8 border-4 border-brand-500 border-t-transparent rounded-full" />
       </div>
     );
   }
@@ -74,7 +56,7 @@ export function DashboardPage() {
         <StatCard label="Contatos Ativos" value={stats.totals.contacts} icon={Users} color="bg-blue-500" />
         <StatCard label="Campanhas" value={stats.totals.campaigns} icon={Megaphone} color="bg-purple-500"
           sub={`${stats.totals.activeCampaigns} ativas`} />
-        <StatCard label="Mensagens Enviadas" value={stats.totals.messages} icon={Send} color="bg-whatsapp-600" />
+        <StatCard label="Mensagens Enviadas" value={stats.totals.messages} icon={Send} color="bg-channel-600" />
         <StatCard label="Entregues" value={stats.totals.delivered} icon={CheckCheck} color="bg-emerald-500"
           sub={`${stats.rates.delivery}% taxa`} />
       </div>
@@ -90,15 +72,15 @@ export function DashboardPage() {
       <div className="grid grid-cols-2 gap-4">
         <div className="card p-6">
           <div className="flex items-center gap-2 mb-4">
-            <TrendingUp size={18} className="text-whatsapp-600" />
+            <TrendingUp size={18} className="text-brand-700" />
             <h3 className="font-semibold text-gray-700">Taxa de Entrega</h3>
           </div>
           <div className="flex items-end gap-2">
-            <span className="text-4xl font-bold text-whatsapp-600">{stats.rates.delivery}%</span>
+            <span className="text-4xl font-bold text-brand-700">{stats.rates.delivery}%</span>
           </div>
           <div className="mt-3 h-2 bg-gray-100 rounded-full overflow-hidden">
             <div
-              className="h-full bg-whatsapp-500 rounded-full transition-all"
+              className="h-full bg-brand-500 rounded-full transition-all"
               style={{ width: `${stats.rates.delivery}%` }}
             />
           </div>
@@ -140,9 +122,7 @@ export function DashboardPage() {
                   <p>{c.sentCount.toLocaleString('pt-BR')} enviadas</p>
                   <p>{c.totalContacts.toLocaleString('pt-BR')} total</p>
                 </div>
-                <span className={`badge ${STATUS_COLORS[c.status]}`}>
-                  {STATUS_LABELS[c.status]}
-                </span>
+                <StatusBadge {...CAMPAIGN_STATUS[c.status]} />
               </div>
             </div>
           ))}

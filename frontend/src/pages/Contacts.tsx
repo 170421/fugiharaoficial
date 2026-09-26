@@ -135,7 +135,7 @@ export function ContactsPage() {
               key={p}
               onClick={() => setPage(p)}
               className={`w-8 h-8 rounded text-sm font-medium transition-colors ${
-                p === page ? 'bg-whatsapp-600 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
+                p === page ? 'bg-brand-700 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
               }`}
             >
               {p}
